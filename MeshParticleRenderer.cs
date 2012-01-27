@@ -1,3 +1,31 @@
+/**************************************
+
+  zlib License
+
+  Copyright (C) 2011 Xiang Wei
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+
+  3. This notice may not be removed or altered from any source distribution.
+  
+  Xiang Wei (weixiang77 [at] gmail [dot] com)
+  
+  ***************************************/
+
 using UnityEngine;
 using System.Collections;
 
@@ -9,6 +37,7 @@ public class MeshParticleRenderer : MonoBehaviour
 	public Mesh particleMesh;
 	public Material[] particleMaterials;
 	public float meshScale = 1.0f;
+	public Vector3 rotationAxis = Vector3.up;
 
 	GameObject[] particlePool;
 
@@ -32,8 +61,6 @@ public class MeshParticleRenderer : MonoBehaviour
 		RemoveSubParticles();
 	}
 	
-	
-
 	void LateUpdate ()
 	{
 		if (particleMesh == null || maximumParticles <= 0) return;
@@ -58,12 +85,12 @@ public class MeshParticleRenderer : MonoBehaviour
 				if (particleEmitter.useWorldSpace)
 				{
 					particleObject.transform.position = p.position;
-					particleObject.transform.rotation = Quaternion.AngleAxis(p.rotation, Vector3.up);
+					particleObject.transform.rotation = Quaternion.AngleAxis(p.rotation, rotationAxis);
 				}
 				else
 				{
 					particleObject.transform.localPosition = p.position;
-					particleObject.transform.localRotation = Quaternion.AngleAxis(p.rotation, Vector3.up);
+					particleObject.transform.localRotation = Quaternion.AngleAxis(p.rotation, rotationAxis);
 				}
 				float scale = p.size * meshScale;
 				particleObject.transform.localScale = new Vector3(scale, scale, scale);
@@ -99,7 +126,7 @@ public class MeshParticleRenderer : MonoBehaviour
 			mf.mesh = particleMesh;
 			MeshRenderer mr = particleObject.AddComponent<MeshRenderer>();
 			mr.materials = particleMaterials;
-
+			
 			particleObject.transform.parent = transform;
 			particleObject.transform.localScale = new Vector3(meshScale, meshScale, meshScale);
 			particleObject.renderer.enabled = false;
