@@ -104,7 +104,14 @@ public class MeshParticleRenderer : MonoBehaviour
 		{
 			foreach (var o in particlePool)
 			{
-				DestroyImmediate(o);
+				if (Application.isEditor)
+				{
+					DestroyImmediate(o);
+				}
+				else
+				{
+					Destroy(o);
+				}
 			}
 			particlePool = null;
 		}
