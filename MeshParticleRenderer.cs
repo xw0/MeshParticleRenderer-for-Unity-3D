@@ -67,20 +67,32 @@ public class MeshParticleRenderer : MonoBehaviour
 		{
 			ResetSubParticles();
 		}
-	
+		#if UNITY_5_0
         Particle[] particles = GetComponent<ParticleEmitter>().particles;
+		#else
+		Particle[] particles = particleEmitter.particles;
+		#endif
 		for (int i=0; i<maximumParticles; ++i)
 		{
 			GameObject particleObject = particlePool[i];
 			if (i >= particles.Length)
 			{
-                particleObject.GetComponent<Renderer>().enabled = false;
+                #if UNITY_5_0
+				particleObject.GetComponent<Renderer>().enabled = false;
+				#else
+				particleObject.renderer.enabled = false;
+				#endif
 			}
 			else
 			{
-                particleObject.GetComponent<Renderer>().enabled = true;
 				Particle p = particles[i];
+				#if UNITY_5_0
+				particleObject.GetComponent<Renderer>().enabled = true;
 				if (GetComponent<ParticleEmitter>().useWorldSpace)
+				#else
+				particleObject.renderer.enabled = true;
+				if (particleEmitter.useWorldSpace)
+				#endif
 				{
 					particleObject.transform.position = p.position;
 					particleObject.transform.rotation = Quaternion.AngleAxis(p.rotation, rotationAxis);
@@ -134,7 +146,11 @@ public class MeshParticleRenderer : MonoBehaviour
 			
 			particleObject.transform.parent = transform;
 			particleObject.transform.localScale = new Vector3(meshScale, meshScale, meshScale);
+			#if UNITY_5_0
             particleObject.GetComponent<Renderer>().enabled = false;
+			#else
+			particleObject.renderer.enabled = false;
+			#endif
 
 			particlePool[i] = particleObject;
 		}
